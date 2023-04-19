@@ -16,6 +16,7 @@ struct MainView: View {
                 }
             
             Text("Settings")
+            SettingsView()
                 .tabItem {
                     Label("Settingd", systemImage: "gear")
                 }
