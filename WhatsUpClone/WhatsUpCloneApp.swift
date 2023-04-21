@@ -47,6 +47,17 @@ struct WhatsUpCloneApp: App {
                 }
     
             }
+            .overlay(alignment: .top, content: {
+                switch appState.loadingState {
+                case .idle:
+                     EmptyView()
+                case .loading(let message):
+                     LoadingView(message: message)
+                }
+            })
+            .sheet(item: $appState.errorWrapper, content: { error in
+                ErrorView(errorWrapper: error)
+            })
             .environmentObject(model)
             .environmentObject(appState)
             

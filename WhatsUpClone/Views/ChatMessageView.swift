@@ -16,9 +16,30 @@ struct ChatMessageView: View {
     let message: ChatMessage
     let direction: ChatMessageDirection
     let color: Color
+    
+    @ViewBuilder
+    private func profilePhotoForChatMessage(chatMessage: ChatMessage) -> some View{
+        if let profilePhotoURL = chatMessage.displayProfilePhotoURL {
+            AsyncImage(url: profilePhotoURL) { image in
+                image.rounded(width: 34, height: 34)
+            } placeholder: {
+                Image(systemName: "person.crop.circle")
+                    .font(.title)
+            }
+        }else {
+            Image(systemName: "person.crop.circle")
+                .font(.title)
+        }
+    }
+    
     var body: some View {
         HStack {
             //Profile photo
+            
+            if direction == .left {
+                profilePhotoForChatMessage(chatMessage: message)
+            }
+            
             VStack(alignment: .leading, spacing: 5) {
                 Text(message.displayName)
                     .opacity(0.8)
@@ -27,12 +48,27 @@ struct ChatMessageView: View {
                 
                 //Photourl
                 
+                if let attachmentPhotoURL = message.displayAttachmentPhotoURL{
+                    AsyncImage(url: attachmentPhotoURL) { image in
+                        image.resizable()
+                            .cornerRadius(10)
+                            .aspectRatio(contentMode: .fit)
+                            .padding()
+                            .shadow(color: .black, radius: 5)
+                            
+                            
+                    } placeholder: {
+                        ProgressView("Loading...")
+                    }
+
+                }
+                
                 Text(message.text)
                 
                 Text(message.dateCreated, format: .dateTime)
                     .font(.caption)
                     .opacity(0.4)
-                    .frame(maxWidth: 200,alignment: .trailing)
+                    .frame(maxWidth: 250, alignment: .trailing)
             }.padding()
                 .background(color)
                 .foregroundColor(.white)
@@ -46,6 +82,10 @@ struct ChatMessageView: View {
                     .offset(x: direction == .left ? 30 : -30, y: 17)
                     .foregroundColor(color)
             }
+        
+        if direction == .right {
+            profilePhotoForChatMessage(chatMessage: message)
+        }
     }
 }
 

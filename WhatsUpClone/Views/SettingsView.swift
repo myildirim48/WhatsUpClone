@@ -21,6 +21,7 @@ struct SettingsView: View {
     @State private var settingsConfig = SettingsConfig()
     @FocusState var isEditing: Bool
     @EnvironmentObject private var model: Model
+    @EnvironmentObject private var appState: AppState
     @State private var currentPhoroUrl: URL? = Auth.auth().currentUser!.photoURL
     
     var displayName: String {
@@ -55,7 +56,12 @@ struct SettingsView: View {
             Spacer()
             
             Button("Sign Out") {
-                
+                do{
+                   try Auth.auth().signOut()
+                    appState.routes.append(.login)
+                }catch{
+                    print(error)
+                }
             }
         }.sheet(item: $settingsConfig.sourceType, content: { sourceType in
             ImagePicker(sourceType: sourceType, image: $settingsConfig.selectedImage)

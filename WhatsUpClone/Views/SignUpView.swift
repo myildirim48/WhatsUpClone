@@ -12,7 +12,6 @@ struct SignUpView: View {
     @State private var email: String = ""
     @State private var password: String = ""
     @State private var displayName: String = ""
-    @State private var errorMessage: String = ""
     
     @EnvironmentObject private var model : Model
     @EnvironmentObject private var appState : AppState
@@ -38,7 +37,8 @@ struct SignUpView: View {
             try await model.updateDisplayName(for: result.user, displayName: displayName)
             appState.routes.append(.login)
         }catch{
-            errorMessage = error.localizedDescription
+            appState.errorWrapper = ErrorWrapper(error: error)
+            
         }
     }
     
@@ -65,7 +65,7 @@ struct SignUpView: View {
                 .buttonStyle(.borderless)
                 Spacer()
             }
-            Text(errorMessage)
+            
         }
     }
 }
